@@ -1,3 +1,4 @@
-# Image Registration Scripts
+# Bio-image registration with Python
 
-At the moment, just a loose collection of image registration scripts.
+The *Python* scripts in this repository were used to evaluate the performance of common bio-image registration methods. The results of this study are summarized in this [blog post](https://www.fabriziomusacchio.com/blog).
+

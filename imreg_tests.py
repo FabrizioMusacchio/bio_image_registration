@@ -33,7 +33,7 @@ def plot_2Dimage(image, title, path):
     plt.tight_layout()
     plt.savefig(RESULTSpath+title+".pdf")
 
-def plot_phase_cross_corr_results(image, image_shifted,image_reg, plotname="phase_cross_corr",
+def plot_phase_cross_corr_results_old(image, image_shifted,image_reg, plotname="phase_cross_corr",
                                   pearson_corr_R=1.0, pearson_corr_R_reg=1.0, corr_border=30,
                                   shifts=[0,0,0]):
     corr_border_0 = corr_border
@@ -45,8 +45,9 @@ def plot_phase_cross_corr_results(image, image_shifted,image_reg, plotname="phas
     ax1 = plt.subplot(2, 3, 1)
     ax2 = plt.subplot(2, 3, 2, sharex=ax1, sharey=ax1)
     ax3 = plt.subplot(2, 3, 3, sharex=ax1, sharey=ax1)
-    ax4 = plt.subplot(2, 3, 5, sharex=ax1, sharey=ax1)
     ax6 = plt.subplot(2, 3, 4, sharex=ax1, sharey=ax1)
+    ax4 = plt.subplot(2, 3, 5, sharex=ax1, sharey=ax1)
+    
     
     ax1.imshow(image)
     ax1.set_title("original", fontsize=14, fontweight="bold")
@@ -96,8 +97,62 @@ def plot_phase_cross_corr_results(image, image_shifted,image_reg, plotname="phas
     plt.tight_layout()
     plt.savefig(RESULTSpath+plotname+".pdf")
     plt.savefig(RESULTSpath+"jpg/"+plotname+".jpg", dpi=120)
+
+def plot_phase_cross_corr_results(image, image_shifted,image_reg, plotname="phase_cross_corr",
+                                  pearson_corr_R=1.0, pearson_corr_R_reg=1.0, corr_border=30,
+                                  shifts=[0,0,0]):
+    corr_border_0 = corr_border
+    corr_border_1 = image.shape[0]-corr_border
     
-def plot_optical_flow_results(image, image_shifted,image_reg, x,y,u_,v_, plotname="optical_flow",
+    plt.close()
+    fig = plt.figure(figsize=(8, 8))
+    plt.clf()
+    ax1 = plt.subplot(2, 2, 1)
+    ax2 = plt.subplot(2, 2, 2, sharex=ax1, sharey=ax1)
+    ax3 = plt.subplot(2, 2, 3, sharex=ax1, sharey=ax1)
+    ax4 = plt.subplot(2, 2, 4, sharex=ax1, sharey=ax1)
+    
+    ax4.text(0, 250, f"Correlation coefficients:",  fontsize=13, fontweight="bold", va="top")
+    ax4.text(0, 233, f" - image vs. moved:      {np.round(pearson_corr_R, 2)}", fontsize=13, 
+             fontweight="bold",  va="top")
+    ax4.text(0, 216, f" - image vs. registered: {np.round(pearson_corr_R_reg, 2)}", fontsize=13, 
+             fontweight="bold", va="top")
+    ax4.text(0, 199, f"(account for area within the", fontsize=13, fontweight="bold", va="top")
+    ax4.text(0, 182, f"red rectangle)", fontsize=13, fontweight="bold", va="top")
+    ax4.text(0, 145, f"detected ", fontsize=13, fontweight="bold", va="top")
+    ax4.text(0, 128, f" - translation: {np.round(shifts[0],1)}, {np.round(shifts[1],1)}", fontsize=13, fontweight="bold", va="top")
+    ax4.text(0, 111, f" - rotation:      {np.round(shifts[2],1)}°", fontsize=13, fontweight="bold", va="top")
+    ax4.spines['right'].set_visible(False)
+    ax4.spines['top'].set_visible(False)
+    ax4.spines['bottom'].set_visible(False)
+    ax4.spines['left'].set_visible(False)
+    ax4.set_xticks([])
+    ax4.set_yticks([])
+    
+    ax1.imshow(image_shifted)
+    ax1.set_title("moved", fontsize=14, fontweight="bold")
+    ax1.plot([corr_border_0,corr_border_1], [corr_border_0, corr_border_0], '-', c="r", lw=0.75)
+    ax1.plot([corr_border_0,corr_border_1], [corr_border_1, corr_border_1], '-', c="r", lw=0.75)
+    ax1.plot([corr_border_0,corr_border_0], [corr_border_0, corr_border_1], '-', c="r", lw=0.75)
+    ax1.plot([corr_border_1,corr_border_1], [corr_border_0, corr_border_1], '-', c="r", lw=0.75)
+    
+    ax2.imshow(image_reg)
+    ax2.set_title("registered", fontsize=14, fontweight="bold")
+    ax2.plot([corr_border_0,corr_border_1], [corr_border_0, corr_border_0], '-', c="r", lw=0.75)
+    ax2.plot([corr_border_0,corr_border_1], [corr_border_1, corr_border_1], '-', c="r", lw=0.75)
+    ax2.plot([corr_border_0,corr_border_0], [corr_border_0, corr_border_1], '-', c="r", lw=0.75)
+    ax2.plot([corr_border_1,corr_border_1], [corr_border_0, corr_border_1], '-', c="r", lw=0.75)
+    
+    ax3.imshow(image-image_reg)
+    ax3.set_title("original minus registered", fontsize=14, fontweight="bold")
+    ax3.set_xlim((0, image.shape[0]))
+    ax3.set_ylim((0, image.shape[1]))
+    
+    plt.tight_layout()
+    plt.savefig(RESULTSpath+plotname+".pdf")
+    plt.savefig(RESULTSpath+"jpg/"+plotname+".jpg", dpi=120)
+
+def plot_optical_flow_results_old(image, image_shifted,image_reg, x,y,u_,v_, plotname="optical_flow",
                               pearson_corr_R=1.0, pearson_corr_R_reg=1.0, corr_border=30):
     corr_border_0 = corr_border
     corr_border_1 = image.shape[0]-corr_border
@@ -162,7 +217,61 @@ def plot_optical_flow_results(image, image_shifted,image_reg, x,y,u_,v_, plotnam
     plt.tight_layout()
     plt.savefig(RESULTSpath+plotname+".pdf")
     plt.savefig(RESULTSpath+"jpg/"+plotname+".jpg", dpi=120)
-
+    
+def plot_optical_flow_results(image, image_shifted,image_reg, x,y,u_,v_, plotname="optical_flow",
+                              pearson_corr_R=1.0, pearson_corr_R_reg=1.0, corr_border=30):
+    corr_border_0 = corr_border
+    corr_border_1 = image.shape[0]-corr_border
+    
+    plt.close()
+    fig = plt.figure(figsize=(7, 9.0))
+    plt.clf()
+    ax1 = plt.subplot(2, 2, 1)
+    ax2 = plt.subplot(2, 2, 2, sharex=ax1, sharey=ax1)
+    ax3 = plt.subplot(2, 2, 3, sharex=ax1, sharey=ax1)
+    ax4 = plt.subplot(2, 2, 4, sharex=ax1, sharey=ax1)
+    #ax5 = plt.subplot(3, 2, 5, sharex=ax1, sharey=ax1)
+    
+    ax1.imshow(image_shifted)
+    ax1.set_title("moved", fontsize=14, fontweight="bold")
+    ax1.plot([corr_border_0,corr_border_1], [corr_border_0, corr_border_0], '-', c="r", lw=0.75)
+    ax1.plot([corr_border_0,corr_border_1], [corr_border_1, corr_border_1], '-', c="r", lw=0.75)
+    ax1.plot([corr_border_0,corr_border_0], [corr_border_0, corr_border_1], '-', c="r", lw=0.75)
+    ax1.plot([corr_border_1,corr_border_1], [corr_border_0, corr_border_1], '-', c="r", lw=0.75)
+    
+    ax2.imshow(image_reg)
+    ax2.set_title("registered", fontsize=14, fontweight="bold")
+    ax2.plot([corr_border_0,corr_border_1], [corr_border_0, corr_border_0], '-', c="r", lw=0.75)
+    ax2.plot([corr_border_0,corr_border_1], [corr_border_1, corr_border_1], '-', c="r", lw=0.75)
+    ax2.plot([corr_border_0,corr_border_0], [corr_border_0, corr_border_1], '-', c="r", lw=0.75)
+    ax2.plot([corr_border_1,corr_border_1], [corr_border_0, corr_border_1], '-', c="r", lw=0.75)
+    
+    ax4.imshow(image-image_reg)
+    ax4.set_title("original minus registered", fontsize=14, fontweight="bold")
+    
+    ax3.imshow(image_shifted)
+    ax3.quiver(x, y, u_, v_, color='pink', units='dots',
+            angles='xy', scale_units='xy', lw=3)
+    ax3.set_xlim((0, image.shape[0]))
+    ax3.set_ylim((0, image.shape[1]))
+    ax3.set_title("optical flow vector field", fontsize=14, fontweight="bold")
+    
+    text_fontsize= 12
+    ax3.text(0, -8, f"Correlation coefficients:",  fontsize=text_fontsize, fontweight="bold", va="top")
+    ax3.text(0, -26, f"  - image vs. moved:      {np.round(pearson_corr_R, 2)}", fontsize=text_fontsize, 
+             fontweight="bold",  va="top")
+    ax3.text(0, -44, f"  - image vs. registered: {np.round(pearson_corr_R_reg, 2)}", fontsize=text_fontsize, 
+             fontweight="bold", va="top")
+    ax3.text(0, -62, f"(account for area within the", fontsize=text_fontsize, fontweight="bold", va="top")
+    ax3.text(0, -79, f"red rectangle)", fontsize=text_fontsize, fontweight="bold", va="top")
+    ax3.text(0, -106, f"", fontsize=text_fontsize, fontweight="bold", va="top")
+    ax3.set_xticks([])
+    ax3.set_yticks([]) 
+    
+    plt.tight_layout()
+    plt.savefig(RESULTSpath+plotname+".pdf")
+    plt.savefig(RESULTSpath+"jpg/"+plotname+".jpg", dpi=120)
+    
 def do_optical_flow_ilk(image, image_shifted, shift_type="rigid translation", corr_border=30,
                         radius=15, prefilter=False, num_warp=30, gaussian=False, 
                         median_filter_kernel=1):
@@ -192,7 +301,7 @@ def do_optical_flow_ilk(image, image_shifted, shift_type="rigid translation", co
     v = -v[::step, ::step]
 
     plot_optical_flow_results(image, image_shifted, image_reg, x,y,u,v, corr_border=corr_border,
-                            plotname="optical_flow_ilk "+shift_type+" mf="+str(median_filter_kernel), 
+                            plotname="optical_flow_ilk "+shift_type+" mf="+str(median_filter_kernel),
                             pearson_corr_R=pearson_corr_R, pearson_corr_R_reg=pearson_corr_R_reg)
 
 def do_optical_flow_tvl1(image, image_shifted, shift_type="rigid translation", corr_border=30,
@@ -299,6 +408,7 @@ def do_phase_cross_corr(image, image_shifted, upsample_factor=1, shift_type="tra
 # %% CREATE SOME TOY DATA
 image = data.cells3d()[30,1,:,:]
 plot_2Dimage(image, title="original image", path=RESULTSpath)
+np.random.seed(1)
 noise = np.random.normal(0, 0.2, image.shape)*image.mean()
 image = image+noise
 plot_2Dimage(image, title="original image w noise", path=RESULTSpath)
@@ -350,7 +460,6 @@ tform = AffineTransform(shear=np.pi/35)
 image_dichotomized_sheared[:128,30:] = warp(image[:128,0:-30], tform, preserve_range=True).astype(image.dtype)
 image_dichotomized_sheared[128:,:-30]= warp(image[128:,30:], tform.inverse, preserve_range=True).astype(image.dtype)
 plot_2Dimage(image_dichotomized_sheared, title="image dichotomized sheared", path=RESULTSpath)
-
 # %% REGISTER TRANSLATED
 image_shifted = image_rigid_translated
 shift_type    = "translation"
